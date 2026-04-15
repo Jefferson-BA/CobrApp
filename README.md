@@ -1,2 +1,2 @@
 "# CobrApp" 
-"# CobrApp" 
+docker-compose up --build
