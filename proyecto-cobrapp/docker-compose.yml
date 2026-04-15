@@ -8,6 +8,7 @@ services:
       - N8N_BASIC_AUTH_ACTIVE=true
       - N8N_BASIC_AUTH_USER=admin
       - N8N_BASIC_AUTH_PASSWORD=admin123
+      - WEBHOOK_URL=https://pasted-spousal-legged.ngrok-free.dev
     volumes:
       - n8n_data:/home/node/.n8n
 
