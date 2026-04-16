@@ -6,6 +6,13 @@ import numpy as np
 import io
 import re
 from datetime import datetime
+import os  # <-- Agregamos esto
+
+# 1. Le decimos dónde está el programa ejecutable
+pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+
+# 2. Le decimos dónde está la carpeta de idiomas (tessdata)
+os.environ['TESSDATA_PREFIX'] = r'C:\Program Files\Tesseract-OCR\tessdata'
 
 app = FastAPI()
 
@@ -17,15 +24,23 @@ def preprocesar_imagen(image_bytes):
     return thresh
 
 def extraer_datos(texto):
-    # Regex para buscar montos, números de operación y fechas [cite: 221, 222]
-    monto = re.search(r'S/\.?\s*(\d+\.\d{2})', texto)
-    oper  = re.search(r'Operaci[oó]n[:\s]+(\d+)', texto)
-    fecha = re.search(r'(\d{2}/\d{2}/\d{4})', texto)
+    # Usamos re.IGNORECASE para ignorar mayúsculas y minúsculas
+    # El monto ahora acepta "s 80", "S/ 80.00", etc.
+    monto = re.search(r'[sS][/\\]?\s*(\d+(?:\.\d+)?)', texto)
+    oper  = re.search(r'operaci[oó]n\s*(\d+)', texto, re.IGNORECASE)
     
+    # Extraer el nombre (suele estar en la 3ra línea de texto en Yape)
+    lineas = [linea.strip() for linea in texto.split('\n') if linea.strip()]
+    nombre = "Desconocido"
+    # Si detectamos que hay suficientes líneas, el nombre suele estar en la posición 2
+    if len(lineas) > 2:
+        nombre = lineas[2]
+
     return {
         "monto": monto.group(1) if monto else None,
         "operacion": oper.group(1) if oper else None,
-        "fecha": fecha.group(1) if fecha else datetime.now().strftime('%d/%m/%Y'),
+        "nombre": nombre,
+        "fecha": datetime.now().strftime('%d/%m/%Y'), # Usamos la fecha de registro actual
         "tipo": "Yape" if "yape" in texto.lower() else "Plin" if "plin" in texto.lower() else "Desconocido",
         "texto_raw": texto
     }
@@ -34,8 +49,10 @@ def extraer_datos(texto):
 async def procesar_imagen(file: UploadFile = File(...)):
     contenido = await file.read()
     img_proc  = preprocesar_imagen(contenido)
-    # Importante: se requiere tener instalado tesseract en el sistema/contenedor [cite: 223]
+    
+    # Lo regresamos a su forma original, ya que ahora Python sabe dónde buscar
     texto     = pytesseract.image_to_string(img_proc, lang='spa')
+    
     datos     = extraer_datos(texto)
     datos["valido"] = datos["monto"] is not None
     return datos
