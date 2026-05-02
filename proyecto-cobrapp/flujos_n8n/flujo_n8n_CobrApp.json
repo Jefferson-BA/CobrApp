@@ -1,0 +1,324 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message",
+          "*"
+        ],
+        "additionalFields": {
+          "download": true
+        }
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "56353d02-9d5d-4236-9bb5-b3b1bff1382a",
+      "name": "Telegram Trigger1",
+      "webhookId": "8d6250c4-05cd-40d8-856f-a2663dd4c9e5",
+      "credentials": {
+        "telegramApi": {
+          "id": "vfedOGAz5CPMpQeU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://host.docker.internal:8000/procesar-imagen",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "data"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "e3bde929-a40e-4b70-8303-c2bb404a3dd3",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "56d14d49-0402-4667-b277-a837104db38d",
+              "leftValue": "={{ $json.valido }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        624,
+        0
+      ],
+      "id": "4429f6da-7772-4033-be26-2ec85ff4294d",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM",
+          "mode": "list",
+          "cachedResultName": "CobrApp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $('HTTP Request').item.json.fecha }}",
+            "Nombre": "={{ $('HTTP Request').item.json.nombre }}",
+            "Monto": "={{ $('HTTP Request').item.json.monto }}",
+            "Tipo": "={{ $('HTTP Request').item.json.tipo }}",
+            "N° Operación": "={{ $('HTTP Request').item.json.operacion }}",
+            "Hora": "={{ $now.format('HH:mm') }}",
+            "Estado": "Registrado",
+            "Registrado por": "Bot automático"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Hora",
+              "displayName": "Hora",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Nombre",
+              "displayName": "Nombre",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Monto",
+              "displayName": "Monto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Tipo",
+              "displayName": "Tipo",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "N° Operación",
+              "displayName": "N° Operación",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Registrado por",
+              "displayName": "Registrado por",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        832,
+        -96
+      ],
+      "id": "2a32316e-8009-48f9-9855-ff8ab891b3ca",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w7ibHqzwiCFkSule",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=¡Hola @{{ $('Telegram Trigger1').item.json.message.from.first_name }}\n✅ ¡Pago exitoso registrado! \n👤 Cliente: [{{ $json.Nombre }}] \n💰 Monto recibido: S/.{{ $json.Monto }} \n🔢 N° Operación: {{ $json['N° Operación'] }}🔢 Fecha: {{ $json.Fecha }} - Hora : {{ $json.Hora }}\n>.< uwu",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1040,
+        -80
+      ],
+      "id": "b64bc312-ebb1-4c28-bf6a-079925c55d0a",
+      "name": "Send a text message",
+      "webhookId": "6f4363ae-c662-4cc2-bafb-73fffbecfd43",
+      "credentials": {
+        "telegramApi": {
+          "id": "vfedOGAz5CPMpQeU",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger1').item.json.message.chat.id }}",
+        "text": "=❌ ¡Ups! No pude procesar esa imagen.\nHola @{{ $('Telegram Trigger1').item.json.message.from.first_name }}, asegúrate de enviar una captura clara de tu Yape o Plin.",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        832,
+        96
+      ],
+      "id": "91ecffa6-cafe-45d2-95ce-869bae975f71",
+      "name": "Send a text message1",
+      "webhookId": "5dd8233b-b13f-49da-903f-f450ed015614",
+      "credentials": {
+        "telegramApi": {
+          "id": "vfedOGAz5CPMpQeU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger1": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "968bb2a5-4cbd-4c91-b85d-15be9760bb46",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f7bdabe5fae0640884425207e6670b6422854e8a22512237d5cc48e60aaf4f64"
+  },
+  "id": "W3PTNCERzZ5RHEka",
+  "tags": []
+}

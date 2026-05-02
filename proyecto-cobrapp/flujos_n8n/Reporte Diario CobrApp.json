@@ -1,0 +1,152 @@
+{
+  "name": "Reporte Diario CobrApp",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 2
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        0,
+        0
+      ],
+      "id": "83c7c4b3-e0d9-4303-b910-9656aadc532b",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM",
+          "mode": "list",
+          "cachedResultName": "CobrApp",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Hoja 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        208,
+        0
+      ],
+      "id": "507a9469-364a-4065-b936-468a14404521",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "w7ibHqzwiCFkSule",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fieldsToSummarize": {
+          "values": [
+            {
+              "aggregation": "sum",
+              "field": "Monto"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.summarize",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "48823f14-de69-484d-bd3b-0a2b82f65bce",
+      "name": "Summarize"
+    },
+    {
+      "parameters": {
+        "chatId": "=-5277018613",
+        "text": "=📊 REPORTE DIARIO - COBRAPP Se ha cerrado la jornada. 💰 Total recaudado hoy: S/. {{ $json.sum_Monto }}\n>.< uwu",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "b3ef0938-4035-4743-8f6e-673354c835b9",
+      "name": "Send a text message",
+      "webhookId": "0bb0b40c-afb7-47d0-b653-93268decfd08",
+      "credentials": {
+        "telegramApi": {
+          "id": "vfedOGAz5CPMpQeU",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Summarize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c349f2f9-14ac-4c29-bba5-66ec900036d3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "f7bdabe5fae0640884425207e6670b6422854e8a22512237d5cc48e60aaf4f64"
+  },
+  "id": "E7EAgXoF1AdDhglT",
+  "tags": []
+}
