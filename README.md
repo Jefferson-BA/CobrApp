@@ -34,7 +34,7 @@ Cliente envía foto  →  OCR extrae los datos  →  Se registra en Google Sheet
 | Entregable | Enlace |
 |---|---|
 | 🎥 Video demostrativo | [Ver el sistema en funcionamiento](https://drive.google.com/file/d/1LBTO6EHhb-VKeRSmTCGcLh-IzO-IlF-w/view?usp=sharing) |
-| 📄 Informe Técnico | [Descargar PDF](proyecto-cobrapp\evidencias\CobrApp_Informe_Tecnico.pdf) |
+| 📄 Informe Técnico | [Descargar PDF](proyecto-cobrapp/evidencias/CobrApp_Informe_Tecnico.pdf) |
 | 📊 Base de Datos (Pruebas) | [Ver Google Sheets](https://docs.google.com/spreadsheets/d/1zEEF8Zi0-QSa1dnvseMA9dcEQEq3OHwV8a1pm3aa1WM/edit?usp=sharing) |
 
 ---
